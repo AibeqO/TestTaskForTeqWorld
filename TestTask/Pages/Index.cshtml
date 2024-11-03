@@ -1,0 +1,88 @@
+﻿@page
+@model TestTask.Pages.Products.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Test task for Teq World</h1>
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Наименование</th>
+                <th scope="col">Единица измерения</th>
+                <th scope="col">Цена за единицу, евро</th>
+                <th scope="col">Количество, шт.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Products != null)
+            {
+                @foreach (var product in Model.Products)
+                {
+                    <tr>
+                        <td>@product.Name</td>
+                        <td>@product.Unit</td>
+                        <td>@product.Price</td>
+                        <td>@product.Quantity</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <form method="post">
+        <button type="submit" asp-page-handler="GroupProducts" class="btn btn-primary mt-3">Разделения списка товаров на группы товаров</button>
+    </form>
+
+    @if (Model.ProductGroups != null && Model.ProductGroups.Count > 0)
+    {
+        <h2 class="mt-5">Группы товаров</h2>
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Наименование группы товаров</th>
+                    <th scope="col">Общая цена, евро</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.ProductGroups.Count; i++)
+                {
+                    var group = Model.ProductGroups[i];
+                    <tr>
+                        <td>Группа @i</td>
+                        <td>@group.Sum(p => p.Price * p.Quantity)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h2 class="mt-5">Содержимое групп товаров</h2>
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Наименование группы товаров</th>
+                    <th scope="col">Наименование</th>
+                    <th scope="col">Единица измерения</th>
+                    <th scope="col">Количество, шт.</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.ProductGroups.Count; i++)
+                {
+                    var group = Model.ProductGroups[i];
+                    foreach (var product in group)
+                    {
+                        <tr>
+                            <td>Группа @i</td>
+                            <td>@product.Name</td>
+                            <td>@product.Unit</td>
+                            <td>@product.Quantity</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+</div>
